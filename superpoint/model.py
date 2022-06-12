@@ -125,7 +125,7 @@ class AuxiliaryConvolutions(torch.nn.Module):
         self.softmax = torch.nn.Softmax(dim=1)
 
     def forward(self, desc):
-        print(desc.shape)
+        # print(desc.shape)
         x = self.relu(self.conv5_1(desc))
         x = self.relu(self.conv5_2(x))
         x = self.pool(x)
@@ -152,6 +152,9 @@ class SP_Classifier(torch.nn.Module):
         super(SP_Classifier, self).__init__()
 
         self.sp = SuperPointNet()
+        for name, param in self.sp.named_parameters():
+            param.requires_grad = False
+        
         self.aux_convs = AuxiliaryConvolutions()
     
     def forward(self, image):
@@ -165,10 +168,11 @@ class SP_Classifier(torch.nn.Module):
 if __name__ == "__main__":
    
     x = torch.randn((2, 1, 240, 320))  
-     
     model = SP_Classifier()
+    # model = SuperPointNet()
 
     out = model(x)
+    # for name, param in model.named_parameters():
+    #     print(name, ':', param.requires_grad)
 
-    print(out)
     print("Success!")
